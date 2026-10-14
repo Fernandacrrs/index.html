@@ -1,0 +1,771 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel do Aluno | SGE</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6fb;
+    color: #243047;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    color: white;
+    padding: 25px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #c7d2fe;
+}
+
+nav {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    width: 84%;
+    max-width: 1150px;
+    margin: 35px auto;
+    flex: 1;
+}
+
+.boas-vindas {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 35px;
+    box-shadow: 0 5px 20px rgba(35,48,71,.05);
+}
+
+.boas-vindas h1 {
+    font-size: 28px;
+    margin-bottom: 12px;
+    color: #3730a3;
+}
+
+.boas-vindas p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.secao-titulo {
+    margin-bottom: 20px;
+}
+
+.secao-titulo h2 {
+    font-size: 23px;
+    margin-bottom: 8px;
+}
+
+.secao-titulo p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.eventos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 22px;
+}
+
+.evento {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(35,48,71,.06);
+    transition: transform .2s, box-shadow .2s;
+}
+
+.evento:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(35,48,71,.12);
+}
+
+.evento-topo {
+    padding: 22px;
+    color: white;
+}
+
+.roxo {
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+}
+
+.azul {
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+}
+
+.verde {
+    background: linear-gradient(135deg, #059669, #34d399);
+}
+
+.categoria {
+    display: inline-block;
+    background: rgba(255,255,255,.22);
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.evento-topo h3 {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.evento-conteudo {
+    padding: 22px;
+}
+
+.evento-conteudo p {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.9;
+    margin-bottom: 18px;
+}
+
+.botao {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #4f46e5;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botao:hover {
+    background: #3730a3;
+}
+
+.botao:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.minhas-inscricoes {
+    margin-top: 40px;
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(35,48,71,.05);
+}
+
+.minhas-inscricoes h2 {
+    color: #3730a3;
+    margin-bottom: 15px;
+}
+
+.inscricao-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.inscricao-item:last-child {
+    border-bottom: none;
+}
+
+.inscricao-item p {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.cancelar {
+    border: none;
+    border-radius: 7px;
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.aviso {
+    margin-top: 25px;
+    padding: 18px;
+    border-left: 4px solid #6366f1;
+    background: #eef2ff;
+    border-radius: 8px;
+    color: #4338ca;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+footer {
+    background: #1e293b;
+    color: #cbd5e1;
+    text-align: center;
+    padding: 25px 15px;
+    font-size: 13px;
+    line-height: 1.8;
+    margin-top: 35px;
+}
+
+/* Janela de inscrição */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgba(15,23,42,.65);
+    justify-content: center;
+    align-items: center;
+    padding: 18px;
+}
+
+.modal.aberto {
+    display: flex;
+}
+
+.modal-conteudo {
+    background: white;
+    width: 100%;
+    max-width: 460px;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: start;
+    margin-bottom: 20px;
+}
+
+.modal-cabecalho h2 {
+    color: #3730a3;
+    font-size: 22px;
+}
+
+.fechar {
+    background: none;
+    border: none;
+    font-size: 27px;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.campo {
+    margin-bottom: 17px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.campo input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.campo input:focus {
+    outline: 2px solid #a5b4fc;
+    border-color: #6366f1;
+}
+
+.mensagem {
+    display: none;
+    margin-bottom: 20px;
+    padding: 14px;
+    border-radius: 8px;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.mensagem.sucesso {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.mensagem.erro {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.vazio {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 22px 6%;
+    }
+
+    main {
+        width: 90%;
+        margin: 25px auto;
+    }
+
+    .boas-vindas {
+        padding: 23px;
+    }
+
+    .boas-vindas h1 {
+        font-size: 24px;
+    }
+
+    nav {
+        gap: 15px;
+    }
+
+    .inscricao-item {
+        align-items: flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">SGE <span>| Eventos</span></div>
+
+    <nav aria-label="Menu principal">
+        <a href="#inicio">Início</a>
+        <a href="#eventos">Eventos</a>
+        <a href="#minhas-inscricoes">Minhas inscrições</a>
+        <a href="#rodape">Contato</a>
+    </nav>
+</header>
+
+<main>
+    <section class="boas-vindas" id="inicio">
+        <h1 id="saudacao">Olá, aluno! 👋</h1>
+        <p>
+            Bem-vindo ao seu Painel do Aluno.
+            Descubra novas oportunidades de aprendizado,
+            participe dos eventos da escola e amplie seus conhecimentos!
+        </p>
+    </section>
+
+    <section id="eventos">
+        <div class="secao-titulo">
+            <h2>Próximos Eventos</h2>
+            <p>Confira as atividades disponíveis na escola técnica.</p>
+        </div>
+
+        <div class="eventos" id="lista-eventos"></div>
+    </section>
+
+    <section class="minhas-inscricoes" id="minhas-inscricoes">
+        <h2>Minhas inscrições</h2>
+        <div id="lista-inscricoes"></div>
+    </section>
+
+    <div class="aviso">
+        💡 <strong>Organize sua participação!</strong>
+        Inscreva-se nos eventos de seu interesse e acompanhe
+        suas inscrições nesta página.
+    </div>
+</main>
+
+<footer id="rodape">
+    <p><strong>SGE — Sistema de Gestão de Eventos</strong></p>
+    <p>Escola Técnica | Educação, tecnologia e oportunidades.</p>
+    <p>© 2026 — Projeto acadêmico de Desenvolvimento de Sistemas.</p>
+</footer>
+
+<!-- Janela de inscrição -->
+<div class="modal" id="modal" role="dialog"
+     aria-modal="true" aria-labelledby="titulo-modal">
+    <div class="modal-conteudo">
+        <div class="modal-cabecalho">
+            <div>
+                <h2 id="titulo-modal">Inscrição no evento</h2>
+                <p id="nome-evento-modal"
+                   style="color:#64748b; margin-top:8px;"></p>
+            </div>
+            <button class="fechar" id="fechar-modal"
+                    aria-label="Fechar janela">&times;</button>
+        </div>
+
+        <div id="mensagem" class="mensagem" role="status"
+             aria-live="polite"></div>
+
+        <form id="form-inscricao">
+            <div class="campo">
+                <label for="nome">Nome completo</label>
+                <input type="text" id="nome" maxlength="100"
+                       autocomplete="name" required>
+            </div>
+
+            <div class="campo">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" maxlength="150"
+                       autocomplete="email" required>
+            </div>
+
+            <button type="submit" class="botao">
+                Confirmar inscrição
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+"use strict";
+
+// Eventos de demonstração
+const eventos = [
+    {
+        id: 1,
+        nome: "Tecnologia e Inovação",
+        categoria: "Palestra",
+        data: "20/11/2026",
+        horario: "19h",
+        local: "Auditório da escola",
+        cor: "roxo"
+    },
+    {
+        id: 2,
+        nome: "Desenvolvimento Web",
+        categoria: "Oficina",
+        data: "25/11/2026",
+        horario: "14h",
+        local: "Laboratório de informática",
+        cor: "azul"
+    },
+    {
+        id: 3,
+        nome: "Empreendedorismo Jovem",
+        categoria: "Workshop",
+        data: "02/12/2026",
+        horario: "9h",
+        local: "Sala de palestras",
+        cor: "verde"
+    }
+];
+
+let eventoSelecionado = null;
+let inscricoes = carregarInscricoes();
+
+const listaEventos = document.getElementById("lista-eventos");
+const listaInscricoes = document.getElementById("lista-inscricoes");
+const modal = document.getElementById("modal");
+const formulario = document.getElementById("form-inscricao");
+const campoNome = document.getElementById("nome");
+const campoEmail = document.getElementById("email");
+const mensagem = document.getElementById("mensagem");
+
+// Tratamento de dados locais
+function carregarInscricoes() {
+    try {
+        const dados = localStorage.getItem("sge_inscricoes");
+        const resultado = dados ? JSON.parse(dados) : [];
+        return Array.isArray(resultado) ? resultado : [];
+    } catch (erro) {
+        return [];
+    }
+}
+
+function salvarInscricoes() {
+    try {
+        localStorage.setItem(
+            "sge_inscricoes",
+            JSON.stringify(inscricoes)
+        );
+        return true;
+    } catch (erro) {
+        mostrarMensagem(
+            "Não foi possível salvar os dados neste navegador.",
+            "erro"
+        );
+        return false;
+    }
+}
+
+function mostrarMensagem(texto, tipo) {
+    mensagem.textContent = texto;
+    mensagem.className = "mensagem " + tipo;
+}
+
+function inscritoNoEvento(eventoId) {
+    const email = campoEmail.value.trim().toLowerCase();
+
+    return inscricoes.some(item =>
+        item.eventoId === eventoId &&
+        email !== "" &&
+        item.email.toLowerCase() === email
+    );
+}
+
+// Exibição dos eventos
+function renderizarEventos() {
+    listaEventos.replaceChildren();
+
+    eventos.forEach(evento => {
+        const cartao = document.createElement("article");
+        cartao.className = "evento";
+
+        const topo = document.createElement("div");
+        topo.className = "evento-topo " + evento.cor;
+
+        const categoria = document.createElement("span");
+        categoria.className = "categoria";
+        categoria.textContent = evento.categoria;
+
+        const titulo = document.createElement("h3");
+        titulo.textContent = evento.nome;
+
+        topo.append(categoria, titulo);
+
+        const conteudo = document.createElement("div");
+        conteudo.className = "evento-conteudo";
+
+        const detalhes = document.createElement("p");
+        detalhes.textContent =
+            "📅 Data: " + evento.data +
+            "\n🕒 Horário: " + evento.horario +
+            "\n📍 Local: " + evento.local;
+        detalhes.style.whiteSpace = "pre-line";
+
+        const botao = document.createElement("button");
+        botao.type = "button";
+        botao.className = "botao";
+        botao.textContent = "Inscrever-se";
+        botao.addEventListener("click", () => abrirModal(evento.id));
+
+        conteudo.append(detalhes, botao);
+        cartao.append(topo, conteudo);
+        listaEventos.appendChild(cartao);
+    });
+}
+
+// Abrir e fechar a janela
+function abrirModal(eventoId) {
+    eventoSelecionado = eventos.find(item => item.id === eventoId);
+
+    if (!eventoSelecionado) return;
+
+    formulario.reset();
+    mensagem.className = "mensagem";
+
+    document.getElementById("nome-evento-modal").textContent =
+        eventoSelecionado.nome + " — " +
+        eventoSelecionado.data + ", às " +
+        eventoSelecionado.horario;
+
+    modal.classList.add("aberto");
+    campoNome.focus();
+}
+
+function fecharModal() {
+    modal.classList.remove("aberto");
+    eventoSelecionado = null;
+}
+
+document.getElementById("fechar-modal")
+    .addEventListener("click", fecharModal);
+
+modal.addEventListener("click", evento => {
+    if (evento.target === modal) fecharModal();
+});
+
+document.addEventListener("keydown", evento => {
+    if (evento.key === "Escape") fecharModal();
+});
+
+// Confirmar inscrição
+formulario.addEventListener("submit", evento => {
+    evento.preventDefault();
+
+    if (!eventoSelecionado) return;
+
+    const nome = campoNome.value.trim();
+    const email = campoEmail.value.trim().toLowerCase();
+
+    if (nome.length < 3) {
+        mostrarMensagem(
+            "Digite seu nome completo corretamente.",
+            "erro"
+        );
+        return;
+    }
+
+    if (!campoEmail.checkValidity()) {
+        mostrarMensagem("Digite um e-mail válido.", "erro");
+        return;
+    }
+
+    const duplicada = inscricoes.some(item =>
+        item.eventoId === eventoSelecionado.id &&
+        item.email.toLowerCase() === email
+    );
+
+    if (duplicada) {
+        mostrarMensagem(
+            "Este e-mail já está inscrito neste evento.",
+            "erro"
+        );
+        return;
+    }
+
+    const novaInscricao = {
+        id: Date.now(),
+        eventoId: eventoSelecionado.id,
+        nome: nome,
+        email: email,
+        dataInscricao: new Date().toISOString()
+    };
+
+    inscricoes.push(novaInscricao);
+
+    if (!salvarInscricoes()) {
+        inscricoes.pop();
+        return;
+    }
+
+    document.getElementById("saudacao").textContent =
+        "Olá, " + nome.split(/\s+/)[0] + "! 👋";
+
+    renderizarInscricoes();
+    mostrarMensagem(
+        "Inscrição realizada com sucesso! Você já pode conferir em Minhas inscrições.",
+        "sucesso"
+    );
+
+    formulario.reset();
+
+    setTimeout(() => {
+        fecharModal();
+        document.getElementById("minhas-inscricoes")
+            .scrollIntoView({ behavior: "smooth" });
+    }, 1400);
+});
+
+// Listar as inscrições do aluno neste navegador
+function renderizarInscricoes() {
+    listaInscricoes.replaceChildren();
+
+    if (inscricoes.length === 0) {
+        const texto = document.createElement("p");
+        texto.className = "vazio";
+        texto.textContent =
+            "Você ainda não possui inscrições. Escolha um evento acima para começar!";
+        listaInscricoes.appendChild(texto);
+        return;
+    }
+
+    inscricoes.forEach(inscricao => {
+        const evento = eventos.find(
+            item => item.id === inscricao.eventoId
+        );
+
+        if (!evento) return;
+
+        const item = document.createElement("div");
+        item.className = "inscricao-item";
+
+        const informacoes = document.createElement("div");
+        const titulo = document.createElement("strong");
+        titulo.textContent = evento.nome;
+
+        const detalhes = document.createElement("p");
+        detalhes.textContent =
+            inscricao.nome + " · " + inscricao.email +
+            "\n" + evento.data + " às " + evento.horario;
+
+        detalhes.style.whiteSpace = "pre-line";
+        informacoes.append(titulo, detalhes);
+
+        const cancelar = document.createElement("button");
+        cancelar.type = "button";
+        cancelar.className = "cancelar";
+        cancelar.textContent = "Cancelar";
+
+        cancelar.addEventListener("click", () => {
+            const confirmar = window.confirm(
+                "Deseja cancelar sua inscrição em " +
+                evento.nome + "?"
+            );
+
+            if (!confirmar) return;
+
+            const indice = inscricoes.findIndex(
+                item => item.id === inscricao.id
+            );
+
+            if (indice === -1) return;
+
+            const removida = inscricoes.splice(indice, 1)[0];
+
+            if (!salvarInscricoes()) {
+                inscricoes.splice(indice, 0, removida);
+                return;
+            }
+
+            renderizarInscricoes();
+            renderizarEventos();
+        });
+
+        item.append(informacoes, cancelar);
+        listaInscricoes.appendChild(item);
+    });
+}
+
+// Inicialização
+renderizarEventos();
+renderizarInscricoes();
+</script>
+
+</body>
+</html>
